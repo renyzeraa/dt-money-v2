@@ -1,8 +1,25 @@
+import { useEffect } from "react";
 import { Header } from "../components/header";
 import { SearchForm } from "../components/search-form";
 import { Summary } from "../components/summary";
+import { cn } from "@/lib/utils";
+import { useTransactionStore } from "@/state/transactions";
+import { useShallow } from "zustand/shallow";
 
 export function Transactions() {
+    const { transactions, setTransactions } = useTransactionStore(useShallow(state => ({
+        setTransactions: state.setTransactions,
+        transactions: state.transactions
+    })))
+
+    useEffect(() => {
+        if (!transactions.length) {
+            fetch('http://localhost:3333/transactions')
+                .then(response => response.json())
+                .then(data => setTransactions(data))
+        }
+
+    }, [transactions, setTransactions])
 
     return (
         <div>
@@ -13,18 +30,14 @@ export function Transactions() {
 
                 <table className="w-full border-separate border-spacing-y-2 mt-6">
                     <tbody>
-                        <tr>
-                            <td className="py-5 px-8 bg-gray-700 border-solid rounded-tl-md rounded-bl-md" width="50%">Desenvolvimento de site</td>
-                            <td className="py-5 px-8 bg-gray-700 border-solid text-green-300">R$ 12.000,00</td>
-                            <td className="py-5 px-8 bg-gray-700 border-solid">Venda</td>
-                            <td className="py-5 px-8 bg-gray-700 border-solid rounded-tr-md rounded-br-md">13/04/2022</td>
-                        </tr>
-                        <tr>
-                            <td className="py-5 px-8 bg-gray-700 border-solid rounded-tl-md rounded-bl-md" width="50%">Cadeira de escritório</td>
-                            <td className="py-5 px-8 bg-gray-700 border-solid text-red-300">- R$ 1.000,00</td>
-                            <td className="py-5 px-8 bg-gray-700 border-solid">Equipamentos</td>
-                            <td className="py-5 px-8 bg-gray-700 border-solid rounded-tr-md rounded-br-md">10/04/2022</td>
-                        </tr>
+                        {transactions.map(({ category, createdAt, description, price, type }) => (
+                            <tr key={createdAt}>
+                                <td className="py-5 px-8 bg-gray-700 border-solid rounded-tl-md rounded-bl-md" width="50%">{description}</td>
+                                <td className={cn("py-5 px-8 bg-gray-700 border-solid", type === 'income' ? 'text-green-300' : 'text-red-300')}>{price}</td>
+                                <td className="py-5 px-8 bg-gray-700 border-solid">{category}</td>
+                                <td className="py-5 px-8 bg-gray-700 border-solid rounded-tr-md rounded-br-md">{createdAt}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </main>

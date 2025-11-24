@@ -1,6 +1,27 @@
+import { useTransactionStore } from "@/state/transactions";
 import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from "phosphor-react";
+import { useShallow } from "zustand/shallow";
 
 export function Summary() {
+    const { transactions } = useTransactionStore(useShallow(state => ({
+        transactions: state.transactions
+    })))
+
+    const { income, outcome, total } = transactions.reduce(
+        (acc, currency) => {
+            if (currency.type === 'income') {
+                acc.income += currency.price
+                acc.total += currency.price
+            }
+            else {
+                acc.outcome += currency.price
+                acc.total -= currency.price
+            }
+            return acc
+        },
+        { income: 0, outcome: 0, total: 0 }
+    )
+
     return (
         <section className="max-w-container w-full mx-auto px-6 grid grid-cols-3 gap-8 mt-[-5rem] [&>div:last-child]:bg-green-700">
             <div className="bg-gray-600 rounded-md p-8">
@@ -8,21 +29,21 @@ export function Summary() {
                     <span>Entradas</span>
                     <ArrowCircleUp size={32} className="text-green-500" />
                 </header>
-                <strong className="block mt-4 text-[2rem]">R$ 17.400,00</strong>
+                <strong className="block mt-4 text-[2rem]">{income}</strong>
             </div>
             <div className="bg-gray-600 rounded-md p-8">
                 <header className="flex justify-between text-gray-300 items-center">
                     <span>Saídas</span>
                     <ArrowCircleDown size={32} className="text-red-500" />
                 </header>
-                <strong className="block mt-4 text-[2rem]">R$ 2.400,00</strong>
+                <strong className="block mt-4 text-[2rem]">{outcome}</strong>
             </div>
             <div className="bg-gray-600 rounded-md p-8">
                 <header className="flex justify-between text-gray-300 items-center">
                     <span>Total</span>
                     <CurrencyDollar size={32} className="text-white" />
                 </header>
-                <strong className="mt-4 text-[2rem] block">R$ 17.400,00</strong>
+                <strong className="mt-4 text-[2rem] block">{total}</strong>
             </div>
         </section>
     )
