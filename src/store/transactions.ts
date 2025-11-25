@@ -1,4 +1,5 @@
 import type { Transaction } from '@/@types/global'
+import { api } from '@/lib/api'
 import { create } from 'zustand'
 
 interface TransactionStore {
@@ -15,14 +16,12 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
   fetchTransactions: async (query) => {
     const { setTransactions } = get()
 
-    const url = new URL('http://localhost:3333/transactions');
+    const response = await api.get('transactions', {
+      params: {
+        q: query,
+      }
+    })
 
-    if (query) {
-      url.searchParams.append('q', query);
-    }
-
-    await fetch(url)
-      .then(response => response.json())
-      .then(data => setTransactions(data))
+    setTransactions(response.data)
   }
 }))
