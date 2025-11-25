@@ -3,7 +3,7 @@ import { Header } from "../components/header";
 import { SearchForm } from "../components/search-form";
 import { Summary } from "../components/summary";
 import { cn } from "@/lib/utils";
-import { useTransactionStore } from "@/state/transactions";
+import { useTransactionStore } from "@/store/transactions";
 import { useShallow } from "zustand/shallow";
 import { dateFormatter, priceFormatter } from "@/utils/formatter";
 

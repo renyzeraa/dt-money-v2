@@ -1,4 +1,4 @@
-import { useTransactionStore } from "@/state/transactions";
+import { useTransactionStore } from "@/store/transactions";
 import { priceFormatter } from "@/utils/formatter";
 import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from "phosphor-react";
 import { useShallow } from "zustand/shallow";
