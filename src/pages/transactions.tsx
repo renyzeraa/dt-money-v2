@@ -8,19 +8,17 @@ import { useShallow } from "zustand/shallow";
 import { dateFormatter, priceFormatter } from "@/utils/formatter";
 
 export function Transactions() {
-    const { transactions, setTransactions } = useTransactionStore(useShallow(state => ({
-        setTransactions: state.setTransactions,
+    const { transactions, fetchTransactions } = useTransactionStore(useShallow(state => ({
+        fetchTransactions: state.fetchTransactions,
         transactions: state.transactions
     })))
 
     useEffect(() => {
         if (!transactions.length) {
-            fetch('http://localhost:3333/transactions')
-                .then(response => response.json())
-                .then(data => setTransactions(data))
+            fetchTransactions()
         }
 
-    }, [transactions, setTransactions])
+    }, [transactions, fetchTransactions])
 
     return (
         <div>

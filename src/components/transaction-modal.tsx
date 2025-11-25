@@ -1,7 +1,7 @@
 import { ArrowCircleDown, ArrowCircleUp } from 'phosphor-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 
@@ -9,7 +9,7 @@ const newTransactionFormSchema = z.object({
     description: z.string(),
     price: z.number(),
     category: z.string(),
-    // type: z.enum(['income', 'outcome']),
+    type: z.enum(['income', 'outcome']),
 })
 
 type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
@@ -18,13 +18,16 @@ export function TransactionModal() {
     const {
         register,
         handleSubmit,
-        formState: { isSubmitting }
+        formState: { isSubmitting },
+        control
     } = useForm<NewTransactionFormInputs>({
         resolver: zodResolver(newTransactionFormSchema),
+        defaultValues: {
+            type: 'income'
+        }
     })
 
     async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
         console.log(data)
     }
 
@@ -51,6 +54,7 @@ export function TransactionModal() {
                         required
                         {...register('description')}
                     />
+
                     <input
                         type="number"
                         className='rounded-md border-none bg-gray-900 text-gray-300 p-4 placeholder:text-gray-500'
@@ -58,6 +62,7 @@ export function TransactionModal() {
                         required
                         {...register('price', { valueAsNumber: true })}
                     />
+
                     <input
                         type="text"
                         className='rounded-md border-none bg-gray-900 text-gray-300 p-4 placeholder:text-gray-500'
@@ -66,20 +71,28 @@ export function TransactionModal() {
                         {...register('category')}
                     />
 
-                    <ToggleGroup type="single" className='gap-4'>
-                        <ToggleGroupItem value="income" asChild className='bg-gray-700 group hover:text-gray-100 hover:bg-gray-600 data-[state="on"]:bg-green-500 data-[state="on"]:text-gray-100'>
-                            <button className='flex items-center w-full justify-center gap-2 h-[58px] border-none font-bold p-4 transition-colors cursor-pointer rounded-md mt-6'>
-                                <ArrowCircleUp size={24} className='text-green-300 group-data-[state="on"]:text-white' /> Entrada
-                            </button>
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="outcome" asChild className='bg-gray-700 group hover:text-gray-100 hover:bg-gray-600 data-[state="on"]:bg-red-500 data-[state="on"]:text-gray-100'>
-                            <button className='flex items-center w-full justify-center gap-2 h-[58px] border-none font-bold p-4 transition-colors cursor-pointer rounded-md mt-6'>
-                                <ArrowCircleDown size={24} className='text-red-300 group-data-[state="on"]:text-white' /> Saída
-                            </button>
-                        </ToggleGroupItem>
-                    </ToggleGroup>
+                    <Controller
+                        control={control}
+                        name='type'
+                        render={({ field }) => {
+                            return (
+                                <ToggleGroup type="single" className='gap-4' onValueChange={field.onChange} value={field.value}>
+                                    <ToggleGroupItem value="income" asChild className='bg-gray-700 group hover:text-gray-100 hover:bg-gray-600 data-[state="on"]:!bg-green-500 data-[state="on"]:!text-gray-100'>
+                                        <button className='flex items-center w-full justify-center gap-2 h-[58px] border-none group-data-[state="on"]:text-white font-bold p-4 transition-colors cursor-pointer rounded-md mt-6'>
+                                            <ArrowCircleUp size={24} className='text-green-300 group-data-[state="on"]:text-white' /> Entrada
+                                        </button>
+                                    </ToggleGroupItem>
+                                    <ToggleGroupItem value="outcome" asChild className='bg-gray-700 group hover:text-gray-100 hover:bg-gray-600 data-[state="on"]:!bg-red-500 data-[state="on"]:!text-gray-100'>
+                                        <button className='flex items-center w-full justify-center gap-2 group-data-[state="on"]:text-white h-[58px] border-none font-bold p-4 transition-colors cursor-pointer rounded-md mt-6'>
+                                            <ArrowCircleDown size={24} className='text-red-300 group-data-[state="on"]:text-white' /> Saída
+                                        </button>
+                                    </ToggleGroupItem>
+                                </ToggleGroup>
+                            )
+                        }}
+                    />
 
-                    <button disabled={isSubmitting} className='disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-green-500 h-[58px] border-none bg-green-500 text-white font-bold px-5 hover:bg-green-700 transition-colors cursor-pointer rounded-md mt-6' type='submit'>Cadastrar</button>
+                    <button type='submit' disabled={isSubmitting} className='disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-green-500 h-[58px] border-none bg-green-500 text-white font-bold px-5 hover:bg-green-700 transition-colors cursor-pointer rounded-md mt-6'>Cadastrar</button>
                 </form>
             </DialogContent>
         </Dialog>
