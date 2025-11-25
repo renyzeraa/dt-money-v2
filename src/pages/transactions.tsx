@@ -5,6 +5,7 @@ import { Summary } from "../components/summary";
 import { cn } from "@/lib/utils";
 import { useTransactionStore } from "@/state/transactions";
 import { useShallow } from "zustand/shallow";
+import { dateFormatter, priceFormatter } from "@/utils/formatter";
 
 export function Transactions() {
     const { transactions, setTransactions } = useTransactionStore(useShallow(state => ({
@@ -30,14 +31,17 @@ export function Transactions() {
 
                 <table className="w-full border-separate border-spacing-y-2 mt-6">
                     <tbody>
-                        {transactions.map(({ category, createdAt, description, price, type }) => (
-                            <tr key={createdAt}>
-                                <td className="py-5 px-8 bg-gray-700 border-solid rounded-tl-md rounded-bl-md" width="50%">{description}</td>
-                                <td className={cn("py-5 px-8 bg-gray-700 border-solid", type === 'income' ? 'text-green-300' : 'text-red-300')}>{price}</td>
-                                <td className="py-5 px-8 bg-gray-700 border-solid">{category}</td>
-                                <td className="py-5 px-8 bg-gray-700 border-solid rounded-tr-md rounded-br-md">{createdAt}</td>
-                            </tr>
-                        ))}
+                        {transactions.map(({ category, createdAt, description, price, type }) => {
+                            const income = type === 'income'
+                            return (
+                                <tr key={createdAt}>
+                                    <td className="py-5 px-8 bg-gray-700 border-solid rounded-tl-md rounded-bl-md" width="50%">{description}</td>
+                                    <td className={cn("py-5 px-8 bg-gray-700 border-solid", income ? 'text-green-300' : 'text-red-300')}>{!income && '- '}{priceFormatter(price)}</td>
+                                    <td className="py-5 px-8 bg-gray-700 border-solid">{category}</td>
+                                    <td className="py-5 px-8 bg-gray-700 border-solid rounded-tr-md rounded-br-md">{dateFormatter(new Date(createdAt))}</td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             </main>

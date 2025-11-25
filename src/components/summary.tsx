@@ -1,4 +1,5 @@
 import { useTransactionStore } from "@/state/transactions";
+import { priceFormatter } from "@/utils/formatter";
 import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from "phosphor-react";
 import { useShallow } from "zustand/shallow";
 
@@ -29,21 +30,21 @@ export function Summary() {
                     <span>Entradas</span>
                     <ArrowCircleUp size={32} className="text-green-500" />
                 </header>
-                <strong className="block mt-4 text-[2rem]">{income}</strong>
+                <strong className="block mt-4 text-[2rem]">{priceFormatter(income)}</strong>
             </div>
             <div className="bg-gray-600 rounded-md p-8">
                 <header className="flex justify-between text-gray-300 items-center">
                     <span>Saídas</span>
                     <ArrowCircleDown size={32} className="text-red-500" />
                 </header>
-                <strong className="block mt-4 text-[2rem]">{outcome}</strong>
+                <strong className="block mt-4 text-[2rem]">{priceFormatter(outcome)}</strong>
             </div>
             <div className="bg-gray-600 rounded-md p-8">
                 <header className="flex justify-between text-gray-300 items-center">
                     <span>Total</span>
                     <CurrencyDollar size={32} className="text-white" />
                 </header>
-                <strong className="mt-4 text-[2rem] block">{total}</strong>
+                <strong className="mt-4 text-[2rem] block">{priceFormatter(total)}</strong>
             </div>
         </section>
     )
