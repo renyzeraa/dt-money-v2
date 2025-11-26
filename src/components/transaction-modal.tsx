@@ -4,6 +4,8 @@ import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { useTransactionStore } from '@/store/transactions'
+import { useShallow } from 'zustand/shallow'
 
 const newTransactionFormSchema = z.object({
     description: z.string(),
@@ -15,11 +17,16 @@ const newTransactionFormSchema = z.object({
 type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
 
 export function TransactionModal() {
+    const { createTransactions } = useTransactionStore(useShallow(state => ({
+        createTransactions: state.createTransactions
+    })))
+
     const {
         register,
         handleSubmit,
         formState: { isSubmitting },
-        control
+        control,
+        reset
     } = useForm<NewTransactionFormInputs>({
         resolver: zodResolver(newTransactionFormSchema),
         defaultValues: {
@@ -28,7 +35,8 @@ export function TransactionModal() {
     })
 
     async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-        console.log(data)
+        createTransactions(data)
+        reset()
     }
 
     return (
