@@ -26,6 +26,29 @@ A aplicação foi construída utilizando **React com TypeScript**, estilizada co
 
 <img width="629" height="352" alt="Image" src="https://github.com/user-attachments/assets/2cb22922-2397-4626-a712-694c6fb68f11" />
 
+## Como Rodar o Projeto Localmente
+
+Siga os passos abaixo para executar o DT Money em sua máquina:
+
+1. **Clone o repositório**
+    ```bash
+    git clone https://github.com/renyzeraa/dt-money-v2.git
+    ```
+2. **Acesse a pasta do projeto**
+    ```bash
+    cd dt-money-v2
+    ```
+3. **Instale as dependências**
+    ```bash
+    npm install
+    ```
+4. **Inicie o servidor de desenvolvimento**
+    ```bash
+    npm run dev
+    ```
+
+O projeto estará disponível em [http://localhost:5173](http://localhost:5173) (ou conforme indicado no terminal).
+
 ---
 
 Se você tiver alguma dúvida ou sugestão, entre em contato e sinta-se à vontade para contribuir !
