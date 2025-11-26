@@ -16,6 +16,7 @@ A aplicação foi construída utilizando **React com TypeScript**, estilizada co
 -   **Dashboard**: Acompanhe o total de entradas e saídas, além de um resumo de seus saldos.
 -   **Tabela de Transações**: Exibe as transações registradas, com informações sobre a descrição, categoria e data de cada lançamento.
 -   **Simulação de Banco de Dados Local**: Utiliza MirageJS para emular um banco de dados e possibilitar a inserção e remoção de dados de maneira prática.
+-   Uso de memo, useCallback, useMemo do React
 
 ## Layout
 

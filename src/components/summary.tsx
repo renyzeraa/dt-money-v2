@@ -1,6 +1,7 @@
 import { useTransactionStore } from "@/store/transactions";
 import { priceFormatter } from "@/utils/formatter";
 import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from "phosphor-react";
+import { useMemo } from "react";
 import { useShallow } from "zustand/shallow";
 
 export function Summary() {
@@ -8,20 +9,22 @@ export function Summary() {
         transactions: state.transactions
     })))
 
-    const { income, outcome, total } = transactions.reduce(
-        (acc, currency) => {
-            if (currency.type === 'income') {
-                acc.income += currency.price
-                acc.total += currency.price
-            }
-            else {
-                acc.outcome += currency.price
-                acc.total -= currency.price
-            }
-            return acc
-        },
-        { income: 0, outcome: 0, total: 0 }
-    )
+    const { income, outcome, total } = useMemo(() => {
+        return transactions.reduce(
+            (acc, currency) => {
+                if (currency.type === 'income') {
+                    acc.income += currency.price
+                    acc.total += currency.price
+                }
+                else {
+                    acc.outcome += currency.price
+                    acc.total -= currency.price
+                }
+                return acc
+            },
+            { income: 0, outcome: 0, total: 0 }
+        )
+    }, [transactions])
 
     return (
         <section className="max-w-container w-full mx-auto px-6 grid grid-cols-3 gap-8 mt-[-5rem] [&>div:last-child]:bg-green-700">
